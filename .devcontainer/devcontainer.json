@@ -1,6 +1,11 @@
 {
   "name": "临时测试站",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/sshd:1": {
+      "version": "latest"
+    }
+  },
   "postStartCommand": "bash .devcontainer/setup.sh",
   "forwardPorts": [8080],
   "portsAttributes": {
