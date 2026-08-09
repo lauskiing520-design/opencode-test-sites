@@ -3,10 +3,10 @@ set -e
 
 echo "=== 临时测试站初始化 ==="
 
-# 建立測試站根目錄（指向工作區根，方便直接把 HTML 放這裡）
+# 建立測試站根目錄
 mkdir -p /workspaces/www
 
-# 放一個預設 index.html 當佔位
+# 預設 index.html
 cat > /workspaces/www/index.html <<'EOF'
 <!DOCTYPE html>
 <html>
@@ -18,10 +18,15 @@ cat > /workspaces/www/index.html <<'EOF'
 </html>
 EOF
 
-# 啟動 PHP 內建伺服器（支援 PHP + 靜態檔）
+# 用 python3 啟動 HTTP server（codespace 一定內建）
 echo "=== 啟動 web server (port 8080) ==="
-nohup php -S 0.0.0.0:8080 -t /workspaces/www > /tmp/phpserver.log 2>&1 &
+# 用 setsid 徹底分離，避免被 hook 結束時殺掉
+setsid nohup python3 -m http.server 8080 --directory /workspaces/www --bind 0.0.0.0 > /tmp/webserver.log 2>&1 < /dev/null &
 
+sleep 2
+echo "=== server status ==="
+ps aux | grep "http.server" | grep -v grep || echo "SERVER-NOT-RUNNING"
+echo "=== log ==="
+cat /tmp/webserver.log 2>/dev/null || true
 echo "=== 完成！==="
 echo "網頁根目錄: /workspaces/www"
-echo "訪問網址: 看 VS Code 底部的 Ports 面板，點 8080 端口的鏈接"
