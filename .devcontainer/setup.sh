@@ -3,11 +3,7 @@ set -e
 
 echo "=== 临时测试站初始化 ==="
 
-# 安裝 opencode
-curl -fsSL https://opencode.ai/install | bash
-echo 'export PATH=$PATH:$HOME/.opencode/bin' >> ~/.bashrc
-
-# 建立測試站根目錄
+# 建立測試站根目錄（指向工作區根，方便直接把 HTML 放這裡）
 mkdir -p /workspaces/www
 
 # 放一個預設 index.html 當佔位
