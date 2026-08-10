@@ -2,6 +2,7 @@
   "name": "临时测试站",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
   "postCreateCommand": "bash .devcontainer/setup.sh",
+  "postStartCommand": "bash .devcontainer/start.sh",
   "forwardPorts": [8080],
   "portsAttributes": {
     "8080": {
