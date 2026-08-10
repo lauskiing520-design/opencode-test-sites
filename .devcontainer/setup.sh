@@ -2,33 +2,30 @@
 # 臨時測試站初始化（Codespaces postCreateCommand 執行）
 set -x
 
-# 建立測試站根目錄
-mkdir -p /workspaces/www
-
-# 預設 index.html
-cat > /workspaces/www/index.html <<'EOF'
-<!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"><title>临时测试站</title></head>
-<body>
-<h1>临时测试站已啟動</h1>
-<p>把你的 HTML 檔案放到 <code>/workspaces/www/</code> 即可訪問</p>
-</body>
-</html>
-EOF
-
 # 安裝 python3（base image 沒有，需 sudo）
 if ! command -v python3 &>/dev/null; then
   sudo apt-get update
-  sudo apt-get install -y python3
+  sudo apt-get install -y python3 python3-pip
 fi
 
-# 啟動 HTTP server（setsid 分離避免被終止）
-setsid nohup python3 -m http.server 8080 --directory /workspaces/www --bind 0.0.0.0 > /tmp/web.log 2>&1 < /dev/null &
-sleep 2
+# 安裝 Flask
+pip3 install flask requests --break-system-packages 2>/dev/null || pip3 install flask requests
 
+# 工作台根目錄
+mkdir -p /workspaces/www
+cat > /workspaces/www/index.html <<'EOF'
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>臨時測試站</title></head>
+<body><h1>臨時測試站</h1><p>Seedance 工作台在 <a href="/seedance">/seedance</a></p></body></html>
+EOF
+
+# 啟動 Seedance 工作台（Flask，port 8080）
+echo "=== 啟動 Seedance 工作台 (port 8080) ==="
+setsid nohup python3 /workspaces/opencode-test-sites/seedance_workbench/app.py > /tmp/seedance.log 2>&1 < /dev/null &
+
+sleep 3
 echo "=== PS ==="
-ps aux | grep http.server | grep -v grep || echo "NOT RUNNING"
+ps aux | grep "app.py" | grep -v grep || echo "NOT RUNNING"
 echo "=== LOG ==="
-cat /tmp/web.log 2>/dev/null || echo "NO LOG"
+cat /tmp/seedance.log 2>/dev/null || echo "NO LOG"
 echo "=== DONE ==="
