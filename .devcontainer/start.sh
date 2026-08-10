@@ -7,8 +7,8 @@ pip3 list 2>/dev/null | grep -q flask || pip3 install flask requests --break-sys
 
 mkdir -p /workspaces/www
 
-# 停掉舊的 Flask / http server
-pkill -f "app.py" 2>/dev/null || true
+# 停掉舊的 Flask（精確匹配 python 進程，避免殺到自己）
+pkill -f "python3.*seedance_workbench" 2>/dev/null || true
 pkill -f "http.server 8080" 2>/dev/null || true
 
 # 啟動 Seedance 工作台（key 從環境變數 ARK_API_KEY 讀取）
