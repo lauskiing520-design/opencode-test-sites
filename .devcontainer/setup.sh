@@ -19,9 +19,10 @@ cat > /workspaces/www/index.html <<'EOF'
 <body><h1>臨時測試站</h1><p>Seedance 工作台在 <a href="/seedance">/seedance</a></p></body></html>
 EOF
 
-# 啟動 Seedance 工作台（Flask，port 8080）
+# 啟動 Seedance 工作台（Flask，port 8080），key 從環境變數 ARK_API_KEY 讀取
 echo "=== 啟動 Seedance 工作台 (port 8080) ==="
-setsid nohup python3 /workspaces/opencode-test-sites/seedance_workbench/app.py > /tmp/seedance.log 2>&1 < /dev/null &
+cd /workspaces/opencode-test-sites
+setsid nohup python3 seedance_workbench/app.py > /tmp/seedance.log 2>&1 < /dev/null &
 
 sleep 3
 echo "=== PS ==="
